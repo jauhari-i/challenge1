@@ -71,7 +71,12 @@ app.post("/keranjang", async (req, res) => {
     res.status(201).json({
       success: true,
       message: "Barang telah ditambahkan",
-      data: keranjang,
+      data: {
+        uuid: keranjang.uuid,
+        barang: keranjang.barang,
+        createdAt: keranjang.createdAt,
+        editedAt: keranjang.editedAt,
+      },
     });
   } catch (error) {
     if (error.message === "Barang tidak boleh kosong") {
@@ -93,15 +98,20 @@ app.put("/keranjang/:uuid", async (req, res) => {
         success: false,
         message: "Barang tidak boleh kosong",
       };
-
-    const keranjang = await Keranjang.findOneAndUpdate(
+    const keranjang = await Keranjang.updateOne(
       { uuid: uuid },
       { barang: data.barang, editedAt: Date.now() }
     );
+    const k = await Keranjang.findOne({ uuid: uuid });
     res.status(201).json({
       success: true,
       message: "Barang telah diperbarui!",
-      data: keranjang,
+      data: {
+        uuid: k.uuid,
+        barang: k.barang,
+        createdAt: k.createdAt,
+        editedAt: k.editedAt,
+      },
     });
   } catch (error) {
     if (error.message === "Barang tidak boleh kosong") {
@@ -119,7 +129,12 @@ app.delete("/keranjang/:uuid", async (req, res) => {
     res.status(201).json({
       success: true,
       message: "Barang telah dihapus!",
-      data: keranjang,
+      data: {
+        uuid: keranjang.uuid,
+        barang: keranjang.barang,
+        createdAt: keranjang.createdAt,
+        editedAt: keranjang.editedAt,
+      },
     });
   } catch (error) {
     res.status(500).send("Internal server error");
